@@ -8,6 +8,7 @@ const sql = process.env.POSTGRES_URL
   : null;
 
 async function seedUsers() {
+  if (!sql) throw new Error('Database connection not available');
   await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
   await sql`
     CREATE TABLE IF NOT EXISTS users (
@@ -33,6 +34,7 @@ async function seedUsers() {
 }
 
 async function seedInvoices() {
+  if (!sql) throw new Error('Database connection not available');
   await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
   await sql`
@@ -59,6 +61,7 @@ async function seedInvoices() {
 }
 
 async function seedCustomers() {
+  if (!sql) throw new Error('Database connection not available');
   await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
   await sql`
@@ -84,6 +87,7 @@ async function seedCustomers() {
 }
 
 async function seedRevenue() {
+  if (!sql) throw new Error('Database connection not available');
   await sql`
     CREATE TABLE IF NOT EXISTS revenue (
       month VARCHAR(4) NOT NULL UNIQUE,
