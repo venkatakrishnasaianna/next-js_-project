@@ -2,7 +2,10 @@ import crypto from 'crypto';
 import postgres from 'postgres';
 import { invoices, customers, revenue, users } from '../lib/placeholder-data';
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+// Only create database connection if POSTGRES_URL is available
+const sql = process.env.POSTGRES_URL 
+  ? postgres(process.env.POSTGRES_URL, { ssl: 'require' })
+  : null;
 
 async function seedUsers() {
   await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
@@ -103,6 +106,12 @@ async function seedRevenue() {
 
 export async function GET() {
   try {
+    if (!sql) {
+      return Response.json({ 
+        error: 'Database connection not available. POSTGRES_URL environment variable is required.' 
+      }, { status: 500 });
+    }
+
     const result = await sql.begin((sql) => [
       seedUsers(),
       seedCustomers(),
